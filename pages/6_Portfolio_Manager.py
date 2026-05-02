@@ -332,13 +332,32 @@ with tab3:
 with tab4:
     st.markdown("#### Holdings Details")
     display_port = port_df.copy()
+
+    # Custom color function — no matplotlib needed
+    def color_gain_loss(col):
+        return [
+            'color: #48BB78; font-weight: 600' if v >= 0 else 'color: #F56565; font-weight: 600'
+            for v in col
+        ]
+
+    def color_day_change(col):
+        return [
+            'color: #48BB78' if v >= 0 else 'color: #F56565'
+            for v in col
+        ]
+
+    cols_to_show = ["Ticker","Company","Shares","Avg Price","Current Price","Day Change %",
+                    "Cost Basis","Market Value","Gain/Loss $","Gain/Loss %","Sector"]
     st.dataframe(
-        display_port[["Ticker","Company","Shares","Avg Price","Current Price","Day Change %",
-                       "Cost Basis","Market Value","Gain/Loss $","Gain/Loss %","Sector"]].style.format({
+        display_port[cols_to_show]
+        .style
+        .apply(color_gain_loss, subset=["Gain/Loss %", "Gain/Loss $"])
+        .apply(color_day_change, subset=["Day Change %"])
+        .format({
             "Avg Price": "${:.2f}", "Current Price": "${:.2f}", "Day Change %": "{:+.2f}%",
             "Cost Basis": "${:,.2f}", "Market Value": "${:,.2f}",
             "Gain/Loss $": "${:+,.2f}", "Gain/Loss %": "{:+.2f}%",
-        }).background_gradient(subset=["Gain/Loss %"], cmap="RdYlGn"),
+        }),
         use_container_width=True, hide_index=True, height=400,
     )
 
