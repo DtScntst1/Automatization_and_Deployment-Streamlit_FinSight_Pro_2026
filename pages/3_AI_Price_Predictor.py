@@ -186,8 +186,9 @@ if future_preds:
         name="Confidence Band",
     ))
 
-# Vertical line for today
-fig.add_vline(x=df.index[-1], line_dash="dash", line_color="rgba(0,212,255,0.4)", line_width=1.5,
+# Vertical line for today — convert Timestamp to string for plotly compatibility
+today_str = df.index[-1].strftime('%Y-%m-%d')
+fig.add_vline(x=today_str, line_dash="dash", line_color="rgba(0,212,255,0.4)", line_width=1.5,
               annotation_text="Today", annotation_position="top right",
               annotation_font_color="#00D4FF")
 
